@@ -1,67 +1,70 @@
-<!DOCTYPE html>
+<php 
+session_start();
+?>
+<DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-  </head>
-  <body>
-  	<center>
+<head>
+<title>Login</title>
+</head>
+<body>
+<?php 
 
-	    <h1>Login</h1>
+$usernameErr= $passwordErr="";
+$username="";
+$password="";
 
-	    <?php
-	      $userNameErr = $passwordErr = "" ;
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(empty($_POST['username'])) {
+        $usernameErr = "Please fill up the last user name properly";
+    }
+    else {
+        $username = $_POST['username'];
+    }
+    if(empty($_POST['pass'])) {
+        $passwordErr = "Please fill up the Password properly";
+    }
+    else {
+        $password = $_POST['pass'];
+    }
 
-	      $userName = "";
-	      $password = "";
-	      $rEmail = "";
+ $fn = fopen("data.txt","r") or die("fail to open file");
+ 
+while($row = fgets($fn)) {
 
-	      if($_SERVER["REQUEST_METHOD"] == "POST") {
+    $json_decoded_text = json_decode($row, true);
+    if($username==$json_decoded_text['User name'] && $password==$json_decoded_text['Password']){
+        echo"successfull";
+        $_SESSION["userid"] = $username;
+        $_SESSION["password"] = $password;
+    }
 
-	        if(empty($_POST['uname'])) {
-	          $userNameErr = "Please fill up the username properly";
-	          }
-	        else {
-	          $userName = $_POST['uname'];
-	        }
+ 
+}
 
-	        if(empty($_POST['password'])) {
-	          $passwordErr = "Please fill up the password properly";
-	        }
-	        else {
-	          $password = $_POST['password'];
-	        }
-	      }
+fclose( $fn );
 
-	    ?>
+}
 
-	    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
-	    	
-			<fieldset>
-	        <legend>Login </legend>
 
-	        <label for="uname">UserName:</label>
-	        <input type="text" name="uname" id="uname" value="<?php echo $userName; ?>">
-	        <br>
-	        <p style="color:red"><?php echo $userNameErr; ?></p>
+?>
 
-	        <label for="pass">Password:</label>
-	        <input type="password" name="password" id="password" value="<?php echo $password; ?>">
-	        <br>
-	        <p style="color:red"><?php echo $passwordErr; ?></p>
-	       
+<h1> Login page:</h1>
 
-			</fieldset>
-			<br>
+    
+<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="POST">
+    <label for="username">Username</label>
+    <input type="text" name="username" id="username" value="<?php echo $username ?>">
+	<p><?php echo $usernameErr; ?></p>
+		
+	<br>
+    <label for="password">Password</label>
+	<input type="password" name="pass" id="pass" value="<?php echo $password ?>">
+	<p><?php echo $passwordErr; ?></p>
+		
+	<br>
+    <input type="submit" value="Submit">
+</form>
+    
+</body>
 
-			<input type="submit" value="Login">
-			<a href="http://localhost/project/admin/adminManagement.php" title="">Not yet registered?</a>
-
-	    </form>
-
-	      <p style="color:red"><?php echo $userName; ?></p>
-	      <p style="color:red"><?php echo $password; ?></p>
-
-      </center>
-    </body>
 </html>
